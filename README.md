@@ -1,145 +1,147 @@
 # Null Chat
 
-تطبيق دردشة آمن مبني على **Next.js** مع تشفير طرف-لطرف (E2EE) للرسائل، ومصادقة بالبريد/كلمة المرور، ورسائل فورية عبر **Ably**، وإشعارات Web Push.
+A secure messaging app built with **Next.js**, featuring end-to-end encrypted (E2EE) messages, email/password authentication, real-time messaging via **Ably**, and Web Push notifications.
 
-> اسم الحزمة في `package.json`: `aegis-chat`
+> Package name in `package.json`: `aegis-chat`
 
-## المميزات
+## Features
 
-- تشفير الرسائل باستخدام ECDH + AES-GCM (المفتاح الخاص يُخزَّن مشفراً بكلمة مرور المستخدم)
-- محادثات مباشرة ومجموعات
-- رسائل فورية (Realtime) عبر Ably
-- إشعارات Push للمتصفح (PWA)
-- تسجيل حسابات جديدة بـ **رمز دعوة** (Invite Code)
-- واجهة حديثة (Tailwind CSS + shadcn/ui) مع دعم الوضع الفاتح/الداكن
+- Message encryption using ECDH + AES-GCM (private key stored encrypted with the user's password)
+- Direct and group conversations
+- Real-time messaging via Ably
+- Browser push notifications (PWA)
+- New account registration requires an **invite code**
+- Modern UI (Tailwind CSS + shadcn/ui) with light/dark theme support
 
-## المتطلبات
+## Requirements
 
-| الأداة | الإصدار المقترح |
-|--------|-----------------|
-| [Node.js](https://nodejs.org/) | 20 أو أحدث |
-| [pnpm](https://pnpm.io/) | 9 أو أحدث |
-| PostgreSQL | قاعدة بيانات (يُفضّل [Neon](https://neon.tech)) |
-| [Ably](https://ably.com) | حساب + مفتاح API |
-| VAPID keys | لإشعارات Web Push |
+| Tool | Recommended version |
+|------|---------------------|
+| [Node.js](https://nodejs.org/) | 20 or later |
+| [pnpm](https://pnpm.io/) | 9 or later |
+| PostgreSQL | Database ( [Neon](https://neon.tech) recommended ) |
+| [Ably](https://ably.com) | Account + API key |
+| VAPID keys | For Web Push notifications |
 
-## التثبيت المحلي
+## Local setup
 
-### 1. استنساخ المشروع
+### 1. Clone the repository
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/aegis-chat.git
 cd aegis-chat
 ```
 
-### 2. تثبيت المكتبات
+### 2. Install dependencies
 
 ```bash
 pnpm install
 ```
 
-> يمكنك استخدام `npm install` أو `yarn`، لكن المشروع يستخدم `pnpm-lock.yaml` ويُفضَّل pnpm.
+> The project uses `pnpm-lock.yaml`. `npm` or `yarn` also work, but pnpm is recommended.
 
-### 3. إعداد متغيرات البيئة
+Build scripts for native dependencies (`esbuild`, `sharp`, etc.) are pre-approved in `pnpm-workspace.yaml`, so you do **not** need to run `pnpm approve-builds` after cloning.
+
+### 3. Configure environment variables
 
 ```bash
 cp .env.example .env.local
 ```
 
-عدّل `.env.local` واملأ القيم التالية:
+Edit `.env.local` and fill in the values below:
 
-| المتغير | الوصف |
-|---------|--------|
-| `DATABASE_URL` | رابط اتصال PostgreSQL |
-| `BETTER_AUTH_SECRET` | سر عشوائي للمصادقة — `openssl rand -base64 32` |
-| `BETTER_AUTH_URL` | عنوان التطبيق — `http://localhost:3000` محلياً |
-| `NEXT_PUBLIC_ABLY_KEY` | مفتاح Ably API |
-| `VAPID_EMAIL` | بريدك بصيغة `mailto:you@example.com` |
-| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | المفتاح العام VAPID |
-| `VAPID_PRIVATE_KEY` | المفتاح الخاص VAPID |
+| Variable | Description |
+|----------|-------------|
+| `DATABASE_URL` | PostgreSQL connection string |
+| `BETTER_AUTH_SECRET` | Random auth secret — generate with `openssl rand -base64 32` |
+| `BETTER_AUTH_URL` | App URL — use `http://localhost:3000` locally |
+| `NEXT_PUBLIC_ABLY_KEY` | Ably API key |
+| `VAPID_EMAIL` | Your email as `mailto:you@example.com` |
+| `NEXT_PUBLIC_VAPID_PUBLIC_KEY` | VAPID public key |
+| `VAPID_PRIVATE_KEY` | VAPID private key |
 
-**توليد مفاتيح VAPID:**
+**Generate VAPID keys:**
 
 ```bash
 npx web-push generate-vapid-keys
 ```
 
-### 4. إنشاء جداول قاعدة البيانات
+### 4. Create database tables
 
 ```bash
 pnpm db:push
 ```
 
-> يُنشئ الجداول مباشرة من مخطط Drizzle. لإنشاء ملفات migration: `pnpm db:generate`
+> Pushes the Drizzle schema directly to the database. To generate migration files instead: `pnpm db:generate`
 
-### 5. إضافة رموز دعوة (Invite Codes)
+### 5. Add invite codes
 
-التسجيل يتطلب رمز دعوة صالحاً في جدول `invite_codes`. أضف رمزاً يدوياً:
+Registration requires a valid invite code in the `invite_codes` table. Add one manually:
 
 ```sql
 INSERT INTO invite_codes (id, code, is_used, created_at, updated_at)
 VALUES ('inv_001', 'WELCOME2026', false, NOW(), NOW());
 ```
 
-> يمكنك فتح Drizzle Studio لإدارة البيانات: `pnpm db:studio`
+> You can manage data visually with Drizzle Studio: `pnpm db:studio`
 
-### 6. تشغيل التطبيق
+### 6. Run the app
 
 ```bash
 pnpm dev
 ```
 
-افتح [http://localhost:3000](http://localhost:3000) — سيُوجَّهك إلى صفحة تسجيل الدخول.
+Open [http://localhost:3000](http://localhost:3000) — you will be redirected to the sign-in page.
 
-## أوامر CLI
+## CLI commands
 
-| الأمر | الوصف |
-|-------|--------|
-| `pnpm dev` | تشغيل خادم التطوير |
-| `pnpm build` | بناء نسخة الإنتاج |
-| `pnpm start` | تشغيل نسخة الإنتاج (بعد `build`) |
-| `pnpm lint` | فحص الكود بـ ESLint |
-| `pnpm db:push` | مزامنة مخطط قاعدة البيانات |
-| `pnpm db:generate` | إنشاء ملفات migration |
-| `pnpm db:studio` | فتح Drizzle Studio |
+| Command | Description |
+|---------|-------------|
+| `pnpm dev` | Start the development server |
+| `pnpm build` | Build for production |
+| `pnpm start` | Run the production server (after `build`) |
+| `pnpm lint` | Run ESLint |
+| `pnpm db:push` | Sync the database schema |
+| `pnpm db:generate` | Generate migration files |
+| `pnpm db:studio` | Open Drizzle Studio |
 
-## الإنتاج (Production)
+## Production
 
 ```bash
 pnpm build
 pnpm start
 ```
 
-عند النشر، غيّر `BETTER_AUTH_URL` إلى عنوان موقعك الفعلي (مثل `https://chat.example.com`).
+When deploying, set `BETTER_AUTH_URL` to your production URL (e.g. `https://chat.example.com`).
 
-## هيكل المشروع
+## Project structure
 
 ```
-├── app/              # صفحات Next.js (App Router) و API routes
-├── components/       # مكوّنات React وواجهة المستخدم
-├── db/               # مخطط Drizzle ORM واتصال قاعدة البيانات
-├── lib/              # المصادقة، التشفير، Web Push
-├── realtime/         # عميل Ably والقنوات
-├── store/            # حالة Zustand
-└── public/           # ملفات ثابتة، Service Worker، PWA manifest
+├── app/              # Next.js pages (App Router) and API routes
+├── components/       # React components and UI
+├── db/               # Drizzle ORM schema and database connection
+├── lib/              # Auth, encryption, Web Push
+├── realtime/         # Ably client and channels
+├── store/            # Zustand state
+└── public/           # Static assets, Service Worker, PWA manifest
 ```
 
-## التقنيات المستخدمة
+## Tech stack
 
 - **Next.js 16** · **React 19** · **TypeScript**
-- **Better Auth** — المصادقة
-- **Drizzle ORM** + **Neon PostgreSQL** — قاعدة البيانات
-- **Ably** — الرسائل الفورية
-- **Web Push (VAPID)** — الإشعارات
+- **Better Auth** — authentication
+- **Drizzle ORM** + **Neon PostgreSQL** — database
+- **Ably** — real-time messaging
+- **Web Push (VAPID)** — notifications
 - **Tailwind CSS 4** · **shadcn/ui** · **Zustand**
 
-## ملاحظات مهمة
+## Important notes
 
-- **لا ترفع** ملف `.env.local` إلى GitHub — الملفات `.env*` مُستثناة في `.gitignore`.
-- **المفتاح الخاص** للتشفير يُنشأ في المتصفح ولا يُخزَّن كنص عادي على الخادم.
-- **Ably** مطلوب للرسائل الفورية؛ بدونه لن تعمل الدردشة بشكل صحيح.
-- **إشعارات Push** اختيارية للتطوير، لكن المتغيرات VAPID مطلوبة إذا أردت تفعيلها.
+- **Do not commit** `.env.local` to GitHub — `.env*` files are excluded in `.gitignore` (except `.env.example`).
+- The encryption **private key** is generated in the browser and never stored in plain text on the server.
+- **Ably** is required for real-time chat; without it, messaging will not work correctly.
+- **Push notifications** are optional during development, but VAPID variables are required if you want to enable them.
 
-## الترخيص
+## License
 
-مشروع خاص (`private: true`). أضف ملف ترخيص إذا أردت جعله مفتوح المصدر.
+Private project (`private: true`). Add a license file if you plan to open-source it.
