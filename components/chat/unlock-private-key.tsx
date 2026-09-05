@@ -110,6 +110,7 @@ export default function UnlockPrivateKeyModal({
               type="password"
               placeholder="Enter your password"
               value={password}
+              disabled={loading}
               onChange={(e) => setPassword(e.target.value)}
               onKeyDown={(e) => e.key === "Enter" && handleUnlock()}
             />

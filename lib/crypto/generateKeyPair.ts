@@ -9,7 +9,6 @@ export async function generateIdentityKeys() {
   );
 }
 
-// تصدير المفتاح كـ JSON (JWK) لتخزينه في Neon
 export async function exportKeyJWK(key: CryptoKey) {
   return await window.crypto.subtle.exportKey("jwk", key);
 }

@@ -3,7 +3,7 @@ import { LocalMessage } from "@/app/data/chat/chat-dto";
 
 interface MessagesStore {
   cache: Record<string, LocalMessage[]>;
-  setMessages: (conversationId: string, messages: LocalMessage[]) => void;
+  setMessages: (conversationId: string, messages: Array<LocalMessage>) => void;
   getMessages: (conversationId: string) => LocalMessage[] | undefined;
   // ✅ إضافة دوال مساعدة للتعامل مع الـ cache بشكل آمن
   addMessage: (conversationId: string, message: LocalMessage) => void;

@@ -1,7 +1,7 @@
 import { ChatSidebar } from "@/components/chat/sidebar";
 import { ChatDal } from "@/app/data/chat/chat-dal";
 import { NotificationManager } from "@/components/notifications/notification-manager";
-import { cn } from "@/lib/utils";
+import { ChatGate } from "@/components/chat/chat-gate";
 
 export default async function Layout({
   children,
@@ -13,21 +13,13 @@ export default async function Layout({
   const user = chatDal.getCurrentUser();
 
   return (
-    <div className="flex h-screen overflow-hidden">
-      <NotificationManager userId={user.id} />
-
-      {/* ===== SIDEBAR ===== */}
-      <ChatSidebar currentUserId={user.id} conversations={conversations} />
-
-      {/* ===== MAIN AREA ===== */}
-      <div
-        className={cn(
-          "flex flex-col overflow-hidden transition-all duration-0",
-          "flex-1",
-        )}
-      >
-        {children}
-      </div>
-    </div>
+    <ChatGate
+      notifications={<NotificationManager userId={user.id} />}
+      sidebar={
+        <ChatSidebar currentUserId={user.id} conversations={conversations} />
+      }
+    >
+      {children}
+    </ChatGate>
   );
 }

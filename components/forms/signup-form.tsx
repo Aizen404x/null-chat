@@ -85,26 +85,25 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const handleSignup = async (data: SignupFormData) => {
     setIsLoding(true);
     try {
-      // 1. تحقق من كود الدعوة (Server-side)
       const inviteCheck = await validateInviteCode(data.inviteCode);
       if (!inviteCheck.success) {
         toast.error(inviteCheck.error);
         return;
       }
 
-      // 2. توليد Salt عشوائي
+      // generate a random salt
       const saltBuffer = window.crypto.getRandomValues(new Uint8Array(16));
       const saltBase64 = bufferToBase64(saltBuffer.buffer);
 
-      // 3. اشتقاق الـ Master Key من كلمة السر
+      // derive the master key from the password
       const masterKey = await deriveMasterKey(data.password, saltBase64);
 
-      // 4. توليد مفتاح الهوية (ECDH)
+      // generate the identity keys
       const keyPair = await generateIdentityKeys();
       const publicKeyJWK = await exportKeyJWK(keyPair.publicKey);
       const privateKeyJWK = await exportKeyJWK(keyPair.privateKey);
 
-      // 5. تشفير المفتاح الخاص
+      // encrypt the private key
       const encryptedPriv = await encryptData(
         JSON.stringify(privateKeyJWK),
         masterKey,
@@ -115,7 +114,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
         iv: bufferToBase64(encryptedPriv.iv.buffer),
       });
 
-      // 6. التسجيل في Better Auth
       const user = await authClient.signUp.email({
         email: `${data.name}@internal.chat`,
         password: data.password,

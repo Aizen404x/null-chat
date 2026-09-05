@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans, Inter } from "next/font/google";
 import "./globals.css";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { RealtimeProvider } from "@/components/providers/ably-provider";
 import SWLoader from "@/components/providers/sw-loader";
+import { cn } from "@/lib/utils";
 
-const notoSans = Noto_Sans({ variable: "--font-sans" });
+const inter = Inter({subsets:['latin'],variable:'--font-sans'});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -33,7 +34,7 @@ export default function RootLayout({
   return (
     <>
       <SWLoader />
-      <html lang="en" className={notoSans.variable} suppressHydrationWarning>
+      <html lang="en" className={cn("font-sans", inter.variable)} suppressHydrationWarning>
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
@@ -45,7 +46,7 @@ export default function RootLayout({
           >
             <TooltipProvider>
               <RealtimeProvider>
-                <Toaster position="top-center" />
+                <Toaster />
                 <main> {children}</main>
               </RealtimeProvider>
             </TooltipProvider>

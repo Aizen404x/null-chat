@@ -18,8 +18,6 @@ import { ChatContact } from "./chat-contact";
 import { authClient } from "@/lib/auth-client";
 import { useRouter, usePathname } from "next/navigation";
 import { ConversationsArray } from "@/app/data/chat/chat-dto";
-import { useCryptoStore } from "@/store/useCryptoStore";
-import UnlockPrivateKeyModal from "./unlock-private-key";
 import { useMessagesStore } from "@/store/useMessagesStore";
 import { realtimeClient } from "@/realtime/client";
 import { CHANNELS } from "@/realtime/channels";
@@ -32,7 +30,6 @@ export function ChatSidebar({
   currentUserId: string;
   conversations: ConversationsArray;
 }) {
-  const privateKey = useCryptoStore((state) => state.privateKey);
   const [conversations, setConversations] =
     useState<ConversationsArray>(initialConversations);
   const [activeTab, setActiveTab] = useState<"personal" | "groups">("personal");
@@ -118,25 +115,19 @@ export function ChatSidebar({
   const isChatSubPage = path.startsWith("/chat/");
 
   return (
-    <>
-      {privateKey === null ? (
-        <div className="flex flex-1 items-center justify-center p-4">
-          <UnlockPrivateKeyModal open={true} onOpenChange={() => {}} />
-        </div>
-      ) : (
-        <div
-          className={cn(
-            "overflow-hidden transition-all duration-0",
-            isChatSubPage ? "hidden md:flex md:w-70 lg:w-80" : "md:w-80 w-full",
-          )}
-        >
-          <div
-            className={
-              path === "/chat/new" || path === "/chat/settings"
-                ? "md:flex w-full flex-col border border-r h-screen hidden"
-                : "flex flex-col border border-r h-screen w-full"
-            }
-          >
+    <div
+      className={cn(
+        "overflow-hidden transition-all duration-0",
+        isChatSubPage ? "hidden md:flex md:w-70 lg:w-80" : "md:w-80 w-full",
+      )}
+    >
+      <div
+        className={
+          path === "/chat/new" || path === "/chat/settings"
+            ? "md:flex w-full flex-col border border-r h-screen hidden"
+            : "flex flex-col border border-r h-screen w-full"
+        }
+      >
             {/* Header */}
             <div className="p-4 pb-2">
               <div className="flex items-center justify-between mb-4">
@@ -244,9 +235,7 @@ export function ChatSidebar({
                 {isLoggingOut ? "Logging out..." : "Logout"}
               </Button>
             </div>
-          </div>
-        </div>
-      )}
-    </>
+      </div>
+    </div>
   );
 }

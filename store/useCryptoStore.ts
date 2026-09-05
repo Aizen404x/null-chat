@@ -1,7 +1,7 @@
 import { create } from "zustand";
 
 interface CryptoState {
-  privateKey: CryptoKey | null; // المفتاح الخاص المفكوك
+  privateKey: CryptoKey | null;  // the decrypted private key
   setPrivateKey: (key: CryptoKey | null) => void;
   clearKeys: () => void;
   name: string;
