@@ -5,9 +5,8 @@ import { nextCookies } from "better-auth/next-js";
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
-    provider: "pg", // or "mysql", "sqlite"
+    provider: "pg", 
   }),
-  // trustedOrigins: ["https://localhost:3000", "https://192.168.1.3:3000"],
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
