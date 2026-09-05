@@ -66,9 +66,10 @@ export async function sendMessageAction(payload: {
       for (const receiver of receivers) {
         console.log(`🚀 Sending push to user: ${receiver.userId}`);
         await sendPushNotification(receiver.userId, {
-          title: "New message",
-          body: `${senderName}: ${payload.plainContent.substring(0, 100)}`,
+          title: senderName,
+          body: payload.plainContent.substring(0, 100),
           url: `/chat/${payload.conversationId}`,
+          tag: `message-${result.messageId}`,
         });
       }
     }

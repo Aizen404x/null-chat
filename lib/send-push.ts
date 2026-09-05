@@ -12,7 +12,13 @@ webpush.setVapidDetails(
 
 export async function sendPushNotification(
   userId: string,
-  payload: { title: string; body: string; url: string; icon?: string },
+  payload: {
+    title: string;
+    body: string;
+    url: string;
+    icon?: string;
+    tag?: string;
+  },
 ) {
   try {
     const subscriptions = await db

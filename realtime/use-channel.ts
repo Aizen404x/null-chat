@@ -22,6 +22,7 @@ export function useChatChannel({
   opponentPublicKey,
   currentUserId,
   opponentUserIds,
+  senderDisplayName,
   onMessage,
 }: {
   channelName: string;
@@ -29,6 +30,7 @@ export function useChatChannel({
   opponentPublicKey: string;
   currentUserId: string;
   opponentUserIds: string[];
+  senderDisplayName?: string;
   onMessage?: (msg: any) => void;
 }) {
   const { publish } = useChannel(channelName, async (msg: Message) => {
@@ -116,6 +118,8 @@ export function useChatChannel({
           conversationId: data.conversationId,
           messageId: dbResult.messageId,
           senderId: data.senderId,
+          senderName: senderDisplayName || "Someone",
+          preview: (data.content || "").substring(0, 100),
           timestamp: data.createdAt,
         });
     }

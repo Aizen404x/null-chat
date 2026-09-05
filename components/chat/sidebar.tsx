@@ -23,6 +23,7 @@ import UnlockPrivateKeyModal from "./unlock-private-key";
 import { useMessagesStore } from "@/store/useMessagesStore";
 import { realtimeClient } from "@/realtime/client";
 import { CHANNELS } from "@/realtime/channels";
+import { NotificationPermissionBanner } from "@/components/notifications/notification-permission-banner";
 
 export function ChatSidebar({
   currentUserId,
@@ -213,6 +214,7 @@ export function ChatSidebar({
 
             {/* Footer with settings, logout and new chat */}
             <div className="p-4 pt-2 space-y-2 border-t bg-background/50">
+              <NotificationPermissionBanner />
               <Button
                 className="w-full justify-start shadow-sm"
                 onClick={() => router.push("/chat/new")}

@@ -72,7 +72,6 @@ import { useCryptoStore } from "@/store/useCryptoStore";
 import { useRouter } from "next/navigation";
 import { Textarea } from "../ui/textarea";
 import { useLongPress } from "@/hooks/long-press";
-import { usePushSetup } from "@/hooks/use-push-setup";
 
 // ─────────────────────────────────────────────
 // MessageActions
@@ -278,6 +277,7 @@ export function ChatMain({
   initialRawMessages,
 }: ChatMainProps) {
   const privateKey = useCryptoStore((state) => state.privateKey);
+  const displayName = useCryptoStore((state) => state.displayName);
   const router = useRouter();
 
   const [localMessages, setLocalMessages] = useState<LocalMessage[]>([]);
@@ -551,6 +551,7 @@ export function ChatMain({
     },
     currentUserId,
     opponentUserIds,
+    senderDisplayName: displayName,
   });
 
   // =========================

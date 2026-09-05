@@ -1,5 +1,6 @@
 import { ChatSidebar } from "@/components/chat/sidebar";
 import { ChatDal } from "@/app/data/chat/chat-dal";
+import { NotificationManager } from "@/components/notifications/notification-manager";
 import { cn } from "@/lib/utils";
 
 export default async function Layout({
@@ -13,6 +14,8 @@ export default async function Layout({
 
   return (
     <div className="flex h-screen overflow-hidden">
+      <NotificationManager userId={user.id} />
+
       {/* ===== SIDEBAR ===== */}
       <ChatSidebar currentUserId={user.id} conversations={conversations} />
 

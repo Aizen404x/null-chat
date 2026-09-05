@@ -78,7 +78,7 @@ export const messages = pgTable(
     iv: text("iv"),
 
     replyToMessageId: text("reply_to_message_id"),
-    createdAt: timestamp("created_at").notNull().defaultNow(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
       .$onUpdate(() => new Date())

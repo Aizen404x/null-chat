@@ -104,6 +104,7 @@ export const inviteCodes = pgTable(
     isUsed: boolean("is_used").default(false).notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
+      .defaultNow()
       .$onUpdate(() => /* @__PURE__ */ new Date())
       .notNull(),
   },
